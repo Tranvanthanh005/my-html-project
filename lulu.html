@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>♡ LU ♡ XINH VCL ♡</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+    #text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: pink;
+      font-size: 24px;
+      font-style: italic;
+      text-align: center;
+      font-family: 'Courier New', Courier, monospace;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="text">❁ LU ♡ XINH VCL ❁</div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    let width, height;
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    const particles = [];
+    const total = 1000;
+
+    function heartFunction(t) {
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = - (13 * Math.cos(t) - 5 * Math.cos(2 * t)
+              - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+      return {x, y};
+    }
+
+    for (let i = 0; i < total; i++) {
+      const t = Math.random() * Math.PI * 2;
+      const pos = heartFunction(t);
+      particles.push({
+        x: width / 2 + pos.x * 20,
+        y: height / 2 + pos.y * 20,
+        size: Math.random() * 2 + 1,
+        speedX: (Math.random() - 0.5) * 0.5,
+        speedY: (Math.random() - 0.5) * 0.5,
+        alpha: Math.random()
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      for (let p of particles) {
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255, 182, 193, ${p.alpha})`;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // move slowly
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        // bounce
+        if (p.x < 0 || p.x > width) p.speedX *= -1;
+        if (p.y < 0 || p.y > height) p.speedY *= -1;
+      }
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  </script>
+</body>
+</html>
